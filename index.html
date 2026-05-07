@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Best - Gestão 360º de Entretenimento</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            best: {
+              dark: '#121212',      /* Fundo MIV */
+              purple: '#6E00FF',    /* Roxo Base */
+              deep: '#21093A',      /* Roxo Profundo */
+              green: '#A4D600',     /* Best Ticket (Financeiro/Digital) */
+              pink: '#FF007F',      /* Best Events (Operação/Físico) */
+              white: '#FFFFFF'
+            }
+          },
+          fontFamily: {
+            sans: ['"Bricolage Grotesque"', 'sans-serif'],
+            display: ['"Monument Extended"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    /* ==========================================
+       IMPORTAÇÃO DE FONTES LOCAIS
+       ========================================== */
+    
+    /* Bricolage Grotesque */
+    @font-face {
+      font-family: 'Bricolage Grotesque';
+      src: url('./BricolageGrotesque-Light.ttf') format('truetype');
+      font-weight: 300;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Bricolage Grotesque';
+      src: url('./BricolageGrotesque-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Bricolage Grotesque';
+      src: url('./BricolageGrotesque-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Bricolage Grotesque';
+      src: url('./BricolageGrotesque-ExtraBold.ttf') format('truetype');
+      font-weight: 800;
+      font-style: normal;
+    }
+
+    /* Monument Extended */
+    @font-face {
+      font-family: 'Monument Extended';
+      src: url('./MonumentExtended-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Monument Extended';
+      src: url('./MonumentExtended-Ultrabold.otf') format('opentype');
+      font-weight: 800;
+      font-style: normal;
+    }
+
+    /* ==========================================
+       ESTILOS CUSTOMIZADOS GERAIS
+       ========================================== */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0px); }
+    }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    
+    @keyframes shine {
+      100% { left: 125%; }
+    }
+    .btn-shine {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-shine::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+      transform: skewX(-20deg);
+      animation: shine 4s infinite;
+    }
+    
+    .glass-panel {
+      background: rgba(33, 9, 58, 0.4); /* deep purple com opacidade */
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(110, 0, 255, 0.2);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .reveal-up {
+      animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes revealUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    body { background-color: #121212; color: #FFFFFF; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function BestMediaKit() {
+      const [scrolled, setScrolled] = useState(false);
+      const [activeTab, setActiveTab] = useState('shows');
+
+      useEffect(() => {
+        const handleScroll = () => {
+          setScrolled(window.scrollY > 50);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+      }, []);
+
+      const eventNiches = {
+        shows: {
+          title: "Domine a cena local com casa cheia",
+          desc: "Ideal para produtores jovens de Funk, Eletrónica e festas universitárias. Operamos o bar e a portaria para que o seu foco seja o line-up e o hype nas redes sociais.",
+          stats: "+5.000 ingressos liquidados rapidamente",
+          image: "./casa-cheia.png" 
+        },
+        clubes: {
+          title: "Operação fluida para a sua Casa Noturna",
+          desc: "Implementamos sistemas fixos, equipas recorrentes e gestão mensal para clubes e bares com entretenimento. Diga adeus às dores de cabeça com escalas de funcionários.",
+          stats: "Contrato Fixo & Previsibilidade",
+          image: "./casa-n.png" 
+        },
+        festivais: {
+          title: "Infraestrutura pesada para Festivais",
+          desc: "Para eventos de rua, food parks e grandes festivais. Resolvemos alvarás, fechamos ruas, distribuímos dezenas de PDVs móveis e garantimos o abastecimento logístico.",
+          stats: "Gestão 360º de F&B (Alimentos e Bebidas)",
+          image: "./festival.png" 
+        }
+      };
+
+      return (
+        <div className="min-h-screen bg-best-dark text-best-white selection:bg-best-purple selection:text-white overflow-x-hidden">
+          
+          {/* NAVEGAÇÃO STICKY */}
+          <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-best-dark/95 backdrop-blur-md border-b border-best-purple/20 py-4' : 'bg-transparent py-6'}`}>
+            <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+              
+              {/* LOGO BEST (Via SVG Local) */}
+              <div className="flex items-center cursor-pointer group h-10">
+                <img src="./logo-best.svg" alt="Logo Best" className="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+              </div>
+
+              <button className="hidden md:flex bg-best-purple text-white px-6 py-2.5 rounded-none font-bold text-sm hover:scale-105 transition-all duration-300 items-center gap-2 btn-shine uppercase tracking-wide">
+                Falar com Consultor
+              </button>
+            </div>
+          </nav>
+
+          {/* SECÇÃO 1: HERO (IMPACTO COM IMAGEM DE FUNDO) */}
+          <section className="relative pt-40 pb-32 px-6 flex flex-col justify-center items-center text-center min-h-[90vh]">
+            <div className="absolute inset-0 z-0">
+              <img src="./festival.png" alt="Pista de Dança" className="w-full h-full object-cover opacity-20 mix-blend-luminosity" />
+              <div className="absolute inset-0 bg-gradient-to-b from-best-dark/90 via-best-deep/60 to-best-dark"></div>
+            </div>
+            
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-best-purple/20 blur-[120px] rounded-full pointer-events-none animate-pulse"></div>
+            
+            <div className="relative z-10 reveal-up">
+              <span className="px-5 py-2 border border-best-purple/50 bg-best-purple/10 text-best-purple text-xs font-bold tracking-widest uppercase mb-8 inline-block backdrop-blur-sm">
+                Gestão 360º de Entretenimento
+              </span>
+              
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-black tracking-normal max-w-5xl leading-tight mb-8 uppercase">
+                A força operacional <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-best-purple to-best-pink">do seu evento.</span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-zinc-300 max-w-3xl mx-auto font-light mb-12 leading-relaxed">
+                Do staff treinado à bilheteira digital: nós absorvemos o caos logístico para que se possa focar apenas numa coisa: <strong className="text-white font-bold">o Sold Out.</strong>
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
+                <button className="bg-best-white text-best-dark px-8 py-4 font-display font-bold text-sm uppercase hover:scale-105 transition-all duration-300 flex items-center gap-2 tracking-wider">
+                  Descubra o Padrão Best <i className="ph ph-arrow-right text-[20px]"></i>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* SECÇÃO 2: A CONEXÃO (INFOGRÁFICO DE FLUXO) */}
+          <section className="py-24 px-6 relative z-20 -mt-20">
+            <div className="max-w-7xl mx-auto">
+              <div className="glass-panel rounded-xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-best-green/10 blur-[80px] rounded-full"></div>
+                
+                <div className="flex flex-col lg:flex-row gap-12 items-center relative z-10">
+                  <div className="w-full lg:w-1/3">
+                    <h3 className="text-3xl font-display font-bold mb-4 uppercase leading-snug tracking-normal">Mapeamos todo o fluxo do seu evento</h3>
+                    <p className="text-zinc-400 text-lg leading-relaxed mb-6">
+                      A Best não é apenas uma plataforma digital. Somos a <strong>ponte física e tecnológica</strong> que assume o controlo de cada ponto de contacto.
+                    </p>
+                  </div>
+                  
+                  <div className="w-full lg:w-2/3 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {/* Item Ticket - Cor Verde Neon */}
+                    <div className="bg-best-dark/80 border border-best-green/30 rounded-xl p-5 hover:-translate-y-2 hover:border-best-green transition-all duration-300 group cursor-default">
+                      <i className={`ph ph-ticket text-[32px] text-best-green group-hover:animate-pulse transition-colors mb-4 block`}></i>
+                      <h4 className="text-white font-bold mb-2">Bilheteira</h4>
+                      <p className="text-zinc-400 text-xs">Venda online e física antifraude com liquidez rápida.</p>
+                    </div>
+
+                    {/* Itens Operação - Cor Rosa/Magenta Neon */}
+                    <div className="bg-best-dark/80 border border-best-pink/30 rounded-xl p-5 hover:-translate-y-2 hover:border-best-pink transition-all duration-300 group cursor-default">
+                      <i className={`ph ph-shield-check text-[32px] text-best-pink group-hover:animate-pulse transition-colors mb-4 block`}></i>
+                      <h4 className="text-white font-bold mb-2">Triagem</h4>
+                      <p className="text-zinc-400 text-xs">Controlo de acesso ultra-rápido e equipa treinada.</p>
+                    </div>
+                    
+                    <div className="bg-best-dark/80 border border-best-pink/30 rounded-xl p-5 hover:-translate-y-2 hover:border-best-pink transition-all duration-300 group cursor-default">
+                      <i className={`ph ph-car text-[32px] text-best-pink group-hover:animate-pulse transition-colors mb-4 block`}></i>
+                      <h4 className="text-white font-bold mb-2">Estacionamento</h4>
+                      <p className="text-zinc-400 text-xs">Gestão de fluxo logístico e pagamentos na entrada.</p>
+                    </div>
+
+                    <div className="bg-best-dark/80 border border-best-pink/30 rounded-xl p-5 hover:-translate-y-2 hover:border-best-pink transition-all duration-300 group cursor-default">
+                      <i className={`ph ph-beer-bottle text-[32px] text-best-pink group-hover:animate-pulse transition-colors mb-4 block`}></i>
+                      <h4 className="text-white font-bold mb-2">Bar & Cashless</h4>
+                      <p className="text-zinc-400 text-xs">Pagamento rápido, bebida consignada e zero filas.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* SECÇÃO EXTRA: VÍDEO PROMOCIONAL */}
+          <section className="py-24 px-6 relative z-20 bg-best-dark border-t border-zinc-800/50">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-12">
+                <span className="text-best-purple font-bold tracking-widest text-sm uppercase mb-4 block">Nós Vivemos a Noite</span>
+                <h2 className="text-4xl md:text-5xl font-display font-bold tracking-normal uppercase">A Energia da Pista</h2>
+              </div>
+              
+              <div className="relative rounded-2xl overflow-hidden border border-best-purple/30 shadow-[0_0_50px_rgba(110,0,255,0.15)] group">
+                <video 
+                  src="./video-best.mp4" 
+                  className="w-full h-[500px] md:h-[700px] object-cover mix-blend-luminosity opacity-80 group-hover:opacity-100 group-hover:mix-blend-normal transition-all duration-700"
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline
+                ></video>
+                
+                {/* Degradê para integrar o vídeo ao fundo escuro */}
+                <div className="absolute inset-0 bg-gradient-to-t from-best-dark/90 via-best-dark/20 to-transparent pointer-events-none"></div>
+                <div className="absolute inset-0 bg-best-purple/10 pointer-events-none mix-blend-overlay"></div>
+                
+                {/* Badge flutuante no vídeo */}
+                <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 z-10">
+                  <div className="glass-panel px-6 py-3 rounded-none border border-best-pink/50 bg-best-pink/10 flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-best-pink animate-pulse"></div>
+                    <span className="text-best-pink font-display font-bold tracking-widest uppercase text-sm">Modo Best Ativado</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* SECÇÃO 3: NICHOS DE EVENTOS */}
+          <section className="py-24 px-6 bg-best-deep/20 border-t border-zinc-800/50">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl md:text-5xl font-display font-bold tracking-normal mb-4 uppercase">Onde fazemos a diferença.</h2>
+                <p className="text-zinc-400 text-lg">Soluções modulares para cada tipo de espetáculo.</p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2 bg-best-dark p-2 rounded-xl mb-12 max-w-3xl mx-auto border border-zinc-800">
+                {[
+                  { id: 'shows', label: 'Eventos & Shows', icon: 'ph-music-notes' },
+                  { id: 'clubes', label: 'Casas Noturnas', icon: 'ph-buildings' },
+                  { id: 'festivais', label: 'Festivais', icon: 'ph-tent' }
+                ].map((tab) => (
+                  <button 
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-1 py-4 px-6 rounded-lg font-bold flex items-center justify-center gap-2 transition-all duration-300 ${
+                      activeTab === tab.id 
+                      ? 'bg-best-purple text-white shadow-[0_0_20px_rgba(110,0,255,0.4)]' 
+                      : 'text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300 border border-transparent'
+                    }`}
+                  >
+                    <i className={`ph ${tab.icon} text-[18px]`}></i> {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="bg-best-dark border border-best-purple/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
+                <div className="p-12 w-full md:w-1/2 flex flex-col justify-center">
+                  <h3 className="text-3xl md:text-4xl font-display font-bold mb-6 tracking-normal uppercase">{eventNiches[activeTab].title}</h3>
+                  <p className="text-zinc-400 text-lg mb-10 leading-relaxed">
+                    {eventNiches[activeTab].desc}
+                  </p>
+                  <div>
+                    <a href="#" className="text-best-purple font-bold flex items-center gap-2 hover:text-best-pink transition-colors group uppercase tracking-wider text-sm">
+                      Ver Solução Best <i className="ph ph-arrow-right text-[18px] group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                  </div>
+                </div>
+                
+                <div className="w-full md:w-1/2 relative min-h-[400px]">
+                  <img 
+                    src={eventNiches[activeTab].image} 
+                    alt="Evento" 
+                    className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-luminosity" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-best-dark to-transparent w-32"></div>
+                  
+                  <div className="absolute top-8 right-8 bg-best-deep/80 backdrop-blur-md border border-best-purple/50 p-4 rounded-xl animate-float shadow-xl">
+                    <p className="text-best-pink text-xs font-bold uppercase mb-1">Métrica Real</p>
+                    <p className="text-white font-black text-xl flex items-center gap-2">
+                      <i className="ph ph-trend-up text-[18px] text-best-green"></i> {eventNiches[activeTab].stats}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* SECÇÃO 4: A NOSSA FORÇA BRAÇAL */}
+          <section className="py-24 px-6 border-y border-zinc-800/50">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex flex-col lg:flex-row gap-16 items-center">
+                
+                <div className="w-full lg:w-5/12">
+                  <span className="text-best-pink font-bold tracking-widest text-sm uppercase mb-4 block">Muito além do Digital</span>
+                  <h2 className="text-4xl md:text-5xl font-display font-bold tracking-normal mb-6 uppercase leading-snug">Software não carrega gelo. Nós sim.</h2>
+                  <p className="text-zinc-400 text-lg mb-8 leading-relaxed">
+                    As tiqueteiras tradicionais abandonam-no na porta. A Best atua na <strong>trincheira</strong>. O ativo mais difícil de um produtor não é a internet, são as pessoas. Nós trazemos o exército.
+                  </p>
+                  <ul className="space-y-6 mb-8">
+                    <li className="flex gap-4 items-start">
+                      <div className="bg-best-pink/10 p-3 rounded-none border border-best-pink/30 text-best-pink mt-1"><i className="ph ph-users text-[24px]"></i></div>
+                      <div>
+                        <h4 className="font-bold text-white text-lg">Pool de +400 Freelancers</h4>
+                        <p className="text-sm text-zinc-400 mt-1">Caixas, barmans e portaria "Padrão Best". Se alguém faltar, substituímos na hora.</p>
+                      </div>
+                    </li>
+                    <li className="flex gap-4 items-start">
+                      <div className="bg-best-pink/10 p-3 rounded-none border border-best-pink/30 text-best-pink mt-1"><i className="ph ph-shield-check text-[24px]"></i></div>
+                      <div>
+                        <h4 className="font-bold text-white text-lg">Domínio Burocrático</h4>
+                        <p className="text-sm text-zinc-400 mt-1">Mais de 90% dos alvarás de Piracicaba passam e são aprovados pelas nossas mãos.</p>
+                      </div>
+                    </li>
+                    <li className="flex gap-4 items-start">
+                      <div className="bg-best-pink/10 p-3 rounded-none border border-best-pink/30 text-best-pink mt-1"><i className="ph ph-beer-bottle text-[24px]"></i></div>
+                      <div>
+                        <h4 className="font-bold text-white text-lg">Logística de Consignados</h4>
+                        <p className="text-sm text-zinc-400 mt-1">Abastecemos o seu bar e arcamos com o risco do stock. Só paga o que consumir.</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="w-full lg:w-7/12 grid grid-cols-2 gap-4 h-[600px]">
+                  <div className="space-y-4 h-full">
+                    {/* Consignação Total */}
+                    <div className="h-2/5 rounded-xl overflow-hidden relative group border border-zinc-800">
+                      <img src="./consignacao.png" alt="Bebidas Bar" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 mix-blend-luminosity" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-best-dark to-transparent"></div>
+                      <div className="absolute bottom-4 left-4 border border-best-pink/50 bg-best-pink/10 backdrop-blur-sm px-3 py-1 text-best-pink text-xs font-bold uppercase">Consignação Total</div>
+                    </div>
+                    {/* Equipe de Portaria */}
+                    <div className="h-3/5 rounded-xl overflow-hidden relative group border border-zinc-800">
+                      <img src="./portaria.png" alt="Produção de Evento" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 mix-blend-luminosity" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-best-dark to-transparent"></div>
+                      <div className="absolute bottom-4 left-4 border border-best-pink/50 bg-best-pink/10 backdrop-blur-sm px-3 py-1 text-best-pink text-xs font-bold uppercase">Equipe de Portaria</div>
+                    </div>
+                  </div>
+                  <div className="space-y-4 h-full pt-12">
+                    {/* Gestão de Bares (A&B) */}
+                    <div className="h-3/5 rounded-xl overflow-hidden relative group border border-zinc-800">
+                      <img src="./gestao-bar.png" alt="Staff Bar" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 mix-blend-luminosity" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-best-dark to-transparent"></div>
+                      <div className="absolute bottom-4 left-4 border border-best-pink/50 bg-best-pink/10 backdrop-blur-sm px-3 py-1 text-best-pink text-xs font-bold uppercase">Gestão de Bares (A&B)</div>
+                    </div>
+                    {/* O Seu Foco: O Público */}
+                    <div className="h-2/5 rounded-xl overflow-hidden relative group border border-zinc-800">
+                      <img src="./publico.png" alt="Multidão" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 mix-blend-luminosity" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-best-dark to-transparent"></div>
+                      <div className="absolute bottom-4 left-4 border border-best-pink/50 bg-best-pink/10 backdrop-blur-sm px-3 py-1 text-best-pink text-xs font-bold uppercase">O Seu Foco: O Público</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {/* SECÇÃO 5: PREÇOS E MÓDULOS */}
+          <section className="py-32 px-6 bg-best-dark">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-20">
+                <h2 className="text-4xl md:text-6xl font-display font-bold tracking-normal mb-6 uppercase">A Oferta Best</h2>
+                <p className="text-zinc-400 text-xl">Modelos de negócio que acompanham o crescimento da sua produção.</p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                
+                {/* MÓDULO 1 */}
+                <div className="bg-[#181818] border border-zinc-800 rounded-none p-8 hover:border-best-pink/50 transition-all duration-300 hover:-translate-y-2">
+                  <div className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">Módulo 1</div>
+                  <h3 className="text-2xl font-display font-bold mb-2 tracking-normal uppercase">Apenas Operacional</h3>
+                  <p className="text-zinc-400 text-sm mb-8 h-10 line-clamp-2">A base tática para quem já possui os próprios sistemas digitais.</p>
+                  <div className="text-4xl font-black mb-8 tracking-normal">Variável<span className="text-lg text-zinc-500 font-normal">/evento</span></div>
+                  <ul className="space-y-4 mb-8">
+                    <li className="flex gap-3 text-zinc-300 text-sm"><i className="ph ph-check-circle text-[18px] text-best-pink shrink-0"></i> Staff (Caixas, Bar e Portaria)</li>
+                    <li className="flex gap-3 text-zinc-300 text-sm"><i className="ph ph-check-circle text-[18px] text-best-pink shrink-0"></i> Gestão Completa de Alvarás</li>
+                    <li className="flex gap-3 text-zinc-300 text-sm"><i className="ph ph-check-circle text-[18px] text-best-pink shrink-0"></i> Compra de Insumos Básicos</li>
+                    <li className="flex gap-3 text-zinc-600 text-sm line-through"><i className="ph ph-check-circle text-[18px] text-zinc-800 shrink-0"></i> Sistema Digital de Bar</li>
+                    <li className="flex gap-3 text-zinc-600 text-sm line-through"><i className="ph ph-check-circle text-[18px] text-zinc-800 shrink-0"></i> Bebida Consignada</li>
+                  </ul>
+                </div>
+
+                {/* MÓDULO 2 */}
+                <div className="bg-[#181818] border border-zinc-800 rounded-none p-8 hover:border-best-purple/50 transition-all duration-300 hover:-translate-y-2">
+                  <div className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">Módulo 2</div>
+                  <h3 className="text-2xl font-display font-bold mb-2 tracking-normal uppercase">Operação + Bar</h3>
+                  <p className="text-zinc-400 text-sm mb-8 h-10 line-clamp-2">Serviço de terreno com o sistema de bar e bebidas consignadas.</p>
+                  <div className="text-4xl font-black mb-4 tracking-normal">50% <span className="text-lg text-zinc-500 font-normal">Sinal</span></div>
+                  <p className="text-best-purple text-xs mb-8 border border-best-purple/20 bg-best-purple/10 py-2 px-3 font-medium">
+                    Requer pagamento de 50% de entrada na fatura.
+                  </p>
+                  <ul className="space-y-4 mb-8">
+                    <li className="flex gap-3 text-zinc-300 text-sm"><i className="ph ph-check-circle text-[18px] text-best-pink shrink-0"></i> Staff & Burocracia</li>
+                    <li className="flex gap-3 text-zinc-300 text-sm"><i className="ph ph-check-circle text-[18px] text-best-purple shrink-0"></i> Sistema Inteligente de Bar</li>
+                    <li className="flex gap-3 text-zinc-300 text-sm"><i className="ph ph-check-circle text-[18px] text-best-purple shrink-0"></i> Bebida 100% Consignada</li>
+                    <li className="flex gap-3 text-zinc-600 text-sm line-through"><i className="ph ph-check-circle text-[18px] text-zinc-800 shrink-0"></i> Bilheteira Best Ticket</li>
+                  </ul>
+                </div>
+
+                {/* MÓDULO 3 (DESTAQUE - MIX BEST TICKET E EVENTS) */}
+                <div className="bg-best-deep border-2 border-best-purple rounded-none p-10 transform lg:scale-105 shadow-[0_0_50px_rgba(110,0,255,0.2)] relative z-10 btn-shine">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-best-green text-best-dark px-5 py-1.5 text-xs font-black uppercase tracking-widest shadow-lg whitespace-nowrap">
+                    A Escolha Inteligente
+                  </div>
+                  <div className="text-xs font-bold uppercase tracking-widest text-best-green mb-2 mt-2">Módulo 3</div>
+                  <h3 className="text-3xl font-display font-bold mb-2 text-white tracking-normal uppercase">Ecossistema 360º</h3>
+                  <p className="text-zinc-300 text-sm mb-8 h-10 line-clamp-2">O mapeamento financeiro total. Operação, Bar, Bebidas e Bilheteira integrados.</p>
+                  <div className="text-5xl font-black mb-4 tracking-normal text-white">Sinal Zero</div>
+                  <p className="text-best-green font-bold mb-8 bg-best-green/10 py-2 px-4 inline-block text-sm border border-best-green/20">
+                    0% de entrada no consignado
+                  </p>
+                  <ul className="space-y-4 mb-10">
+                    <li className="flex gap-3 text-white font-medium text-sm"><i className="ph ph-check-circle text-[18px] text-best-pink shrink-0"></i> Staff, Triagem e Burocracia (Events)</li>
+                    <li className="flex gap-3 text-white font-medium text-sm"><i className="ph ph-check-circle text-[18px] text-best-purple shrink-0"></i> Sistema PDV & Cashless</li>
+                    <li className="flex gap-3 text-white font-medium text-sm"><i className="ph ph-check-circle text-[18px] text-best-purple shrink-0"></i> Bebidas 100% Consignadas</li>
+                    <li className="flex gap-3 text-white font-bold text-sm bg-best-green/10 p-2 border border-best-green/30 -ml-2"><i className="ph ph-ticket text-[18px] text-best-green shrink-0"></i> Bilheteira Best Ticket Integrada</li>
+                  </ul>
+                  <button className="w-full bg-best-purple text-white py-4 font-display font-bold uppercase tracking-widest hover:bg-[#5800cc] transition-colors shadow-lg">
+                    Agendar Reunião
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {/* SECÇÃO 6: LOGOS DE CLIENTES / PROVA SOCIAL */}
+          <section className="py-20 border-t border-zinc-900 bg-best-dark overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6 text-center">
+              <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-12">
+                Quem confia a sua operação à Best
+              </p>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 items-center justify-center opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
+                <div className="flex flex-col items-center justify-center p-6 border border-zinc-800 bg-[#181818] hover:border-best-purple transition-colors cursor-default">
+                  <i className="ph ph-buildings text-[32px] text-zinc-400 mb-2"></i>
+                  <span className="text-xl font-display font-bold uppercase tracking-normal text-white">Mr. Dand</span>
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Clube Residente</span>
+                </div>
+                <div className="flex flex-col items-center justify-center p-6 border border-zinc-800 bg-[#181818] hover:border-best-purple transition-colors cursor-default">
+                  <i className="ph ph-map-pin text-[32px] text-zinc-400 mb-2"></i>
+                  <span className="text-xl font-display font-bold uppercase tracking-normal text-white">Campestre</span>
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Gestão Mensal</span>
+                </div>
+                <div className="flex flex-col items-center justify-center p-6 border border-zinc-800 bg-[#181818] hover:border-best-purple transition-colors cursor-default">
+                  <i className="ph ph-tent text-[32px] text-zinc-400 mb-2"></i>
+                  <span className="text-xl font-display font-bold uppercase tracking-normal text-white">Arena P.</span>
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Grandes Eventos</span>
+                </div>
+                <div className="flex flex-col items-center justify-center p-6 border border-zinc-800 bg-[#181818] hover:border-best-purple transition-colors cursor-default">
+                  <i className="ph ph-music-notes text-[32px] text-zinc-400 mb-2"></i>
+                  <span className="text-xl font-display font-bold uppercase tracking-normal text-white">Posto 011</span>
+                  <span className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Operação de Bar</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* SECÇÃO 7: FOOTER / CTA */}
+          <footer className="py-32 px-6 bg-best-dark relative border-t border-zinc-900 overflow-hidden">
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-best-purple/10 blur-[100px] pointer-events-none"></div>
+            
+            <div className="max-w-4xl mx-auto text-center relative z-10">
+              <h2 className="text-5xl md:text-7xl font-display font-black tracking-normal mb-8 text-white uppercase leading-tight">
+                O palco é seu.<br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-best-purple to-best-pink">A operação é nossa.</span>
+              </h2>
+              <p className="text-xl text-zinc-400 mb-12 font-light max-w-2xl mx-auto">
+                Não perca mais noites de sono a contar caixas. Deixe o fluxo operacional connosco e foque-se em proporcionar a melhor experiência ao seu público.
+              </p>
+              <button className="bg-best-white text-best-dark px-10 py-5 font-display font-bold text-lg uppercase tracking-wider hover:bg-zinc-200 hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all duration-300 flex items-center justify-center gap-3 mx-auto">
+                Iniciar a Parceria <i className="ph ph-arrow-right text-[24px] text-best-purple"></i>
+              </button>
+            </div>
+            
+            {/* Elemento gráfico de som no rodapé em alusão ao equalizador da logo */}
+            <div className="absolute bottom-0 left-0 w-full flex justify-center items-end opacity-20 pointer-events-none h-16 gap-1">
+               {Array.from({length: 40}).map((_, i) => (
+                 <div key={i} className={`w-2 bg-best-purple rounded-t-sm`} style={{ height: `${Math.max(10, Math.random() * 60)}px` }}></div>
+               ))}
+            </div>
+          </footer>
+
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<BestMediaKit />);
+  </script>
+</body>
+</html>
